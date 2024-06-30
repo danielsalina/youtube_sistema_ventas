@@ -1,6 +1,6 @@
 <?php
 
-include_once("../../config/db.php");
+include_once(__DIR__ . "/../../config/db.php");
 
 // ACTUALIZAMOS LOS DATOS DEL PROVEEDOR
 /* if (isset($_POST["edit_provider"]) == "edit_provider") {
@@ -20,7 +20,7 @@ include_once("../../config/db.php");
 
         $result = 0;
 
-        $sql_update = mysqli_query(MYSQLI, "UPDATE SUPPLIERS SET NAME = '$name' , phoneNumber = '$phoneNumber', ADDRESS = '$address', storeId = $storeId, userUpdatedId = $userUpdatedId WHERE ID = $id_proveedor");
+        $sql_update = mysqli_query(MYSQLI, "UPDATE suppliers SET NAME = '$name' , phoneNumber = '$phoneNumber', ADDRESS = '$address', storeId = $storeId, userUpdatedId = $userUpdatedId WHERE ID = $id_proveedor");
 
         if ($sql_update) {
             $alert = '<p class"exito">Proveedor actualizado correctamente</p>';
@@ -48,7 +48,7 @@ function addSupplier()
         $storeId = $_POST['storeId'];
 
         // Validar si el phoneNumber ya está registrado con otro proveedor
-        $query = MYSQLI->prepare("SELECT * FROM SUPPLIERS WHERE phoneNumber = ?");
+        $query = MYSQLI->prepare("SELECT * FROM suppliers WHERE phoneNumber = ?");
         $query->bind_param("s", $phoneNumber);
         $query->execute();
         $result = $query->get_result();
@@ -57,7 +57,7 @@ function addSupplier()
             $alert = '<div class="alert alert-danger" role="alert"> El phoneNumber ya está registrado con otro proveedor </div>';
         } else {
             // Insertar nuevo proveedor
-            $query_insert = MYSQLI->prepare("INSERT INTO SUPPLIERS (NAME, phoneNumber, ADDRESS, branchId, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?)");
+            $query_insert = MYSQLI->prepare("INSERT INTO suppliers (NAME, phoneNumber, ADDRESS, branchId, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?)");
             $query_insert->bind_param("sssiis", $name, $phoneNumber, $address, $branchId, $userCreatedId, $storeId);
             $query_insert->execute();
 
@@ -83,7 +83,7 @@ function addSupplier()
 
 function getSuppliers()
 {
-    $query = "SELECT * FROM SUPPLIERS ORDER BY NAME ASC";
+    $query = "SELECT * FROM suppliers ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -108,7 +108,7 @@ function getSupplierById($id_provider)
         die("Error de conexión: " . MYSQLI->connect_error);
     }
 
-    $stmt = MYSQLI->prepare("SELECT * FROM SUPPLIERS WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM suppliers WHERE ID = ?");
     $stmt->bind_param("i", $id_provider);
     $stmt->execute();
     $result_supplier = $stmt->get_result();
@@ -139,7 +139,7 @@ function editSupplier()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE SUPPLIERS SET NAME = ?, phoneNumber = ?, ADDRESS = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
+        $stmt = MYSQLI->prepare("UPDATE suppliers SET NAME = ?, phoneNumber = ?, ADDRESS = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
         $stmt->bind_param("sssiii", $name, $phoneNumber, $address, $userUpdatedId, $storeId,  $supplier_id);
 
         if ($stmt->execute()) {
@@ -157,7 +157,7 @@ function editSupplier()
 function deleteSupplier($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM SUPPLIERS WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM suppliers WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -175,7 +175,7 @@ function deleteSupplier($id)
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -197,7 +197,7 @@ function getStores()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

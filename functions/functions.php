@@ -1,16 +1,16 @@
 <?php
 
-function sanitizeInput(string $input): string
+function sanitizeInput($input)
 {
-    return htmlspecialchars(trim($input));
+  return htmlspecialchars(trim($input));
 }
 
-function validateEmail(string $email): string
+function validateEmail($email)
 {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
+  return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-function validatePassword(string $password): string
+function validatePassword($password)
 {
-    return strlen($password) >= 6;
+  return strlen($password) >= 3;
 }

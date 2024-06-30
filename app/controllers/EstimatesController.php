@@ -7,18 +7,18 @@ if (!isset($_SESSION['loggedin']) && $_GET['page'] != 'login') {
     exit();
 }
 
-include_once("../views/header.php");
-include_once("../views/nav.php");
-require_once("../models/EstimateModel.php");
+include_once(__DIR__ . "/../views/header.php");
+include_once(__DIR__ . "/../views/nav.php");
+require_once(__DIR__ . "/../models/EstimateModel.php");
 
 // Mostramos la vista para generar un nuevo presupuesto
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] !== "estimates_list") {
-    require_once("../views/estimates/estimateRegister.php");
+    require_once(__DIR__ . "/../views/estimates/estimateRegister.php");
 }
 
 // Mostramos la lista de presupuestos
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "estimates_list") {
-    require_once("../views/estimates/estimatesList.php");
+    require_once(__DIR__ . "/../views/estimates/estimatesList.php");
 }
 
-include_once("../views/footer.php");
+include_once(__DIR__ . "/../views/footer.php");

@@ -1,10 +1,11 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
     session_start();
 
-    require_once("../../functions/functions.php");
-    require_once("../../app/models/UserModel.php");
+    require_once(__DIR__ . "/../../functions/functions.php");
+    require_once(__DIR__ . "/../models/UserModel.php");
 
     $csrf_token = $_POST['csrf_token'];
 
@@ -28,19 +29,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit;
         }
 
-        /* if ($_SESSION['role'] === 2) { */
         header("Location: SalesController.php?name=sale_new");
         exit;
-        /* } */
     } else {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         header("Location: ../../index.php?page=login");
         exit;
     }
 } else {
+
     session_start();
 
     $csrf_token = bin2hex(random_bytes(32));
     $_SESSION['csrf_token'] = $csrf_token;
-    require_once("app/views/login.php");
+    require_once(__DIR__ . "/../views/login.php");
 }

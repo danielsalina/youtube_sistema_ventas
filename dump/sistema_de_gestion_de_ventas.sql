@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 22, 2024 at 02:23 AM
+-- Generation Time: Jun 22, 2024 at 04:40 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -18,14 +18,14 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `proyecto`
+-- Database: `sistema_de_gestion_de_ventas`
 --
 
 DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_temporal_code_detail` (IN `productId` INT, IN `quantity` INT, IN `tokenUser` VARCHAR(50))  DETERMINISTIC BEGIN
+CREATE PROCEDURE `sp_add_temporal_code_detail` (IN `productId` INT, IN `quantity` INT, IN `tokenUser` VARCHAR(50))  DETERMINISTIC BEGIN
     DECLARE precioActual DECIMAL(10,2);
 
     SELECT price INTO precioActual FROM products WHERE id = productId;
@@ -39,7 +39,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_temporal_code_detail` (IN `p
     WHERE tmp.tokenUser = tokenUser;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_temporal_name_detail` (IN `productName` VARCHAR(100), IN `quantity` INT, IN `tokenUser` VARCHAR(50))   BEGIN
+CREATE PROCEDURE `sp_add_temporal_name_detail` (IN `productName` VARCHAR(100), IN `quantity` INT, IN `tokenUser` VARCHAR(50))   BEGIN
     DECLARE productId INT;
     DECLARE precioActual DECIMAL(10,2);
     DECLARE no_more_rows BOOLEAN;
@@ -78,7 +78,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_add_temporal_name_detail` (IN `p
 
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_temporal_detail` (IN `detailId` INT, IN `token` VARCHAR(50))  DETERMINISTIC BEGIN
+CREATE PROCEDURE `sp_delete_temporal_detail` (IN `detailId` INT, IN `token` VARCHAR(50))  DETERMINISTIC BEGIN
     DELETE FROM temporary_details WHERE id = detailId;
 
     SELECT tmp.id, tmp.productId, p.name, tmp.quantity, tmp.sellingPrice
@@ -87,7 +87,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_delete_temporal_detail` (IN `det
     WHERE tmp.tokenUser = token;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_process_budget` (IN `userCreatedId` INT, IN `clientId` INT, IN `token` VARCHAR(50), IN `totalWithDiscount` DECIMAL(10,2), IN `branchId` INT, IN `storeId` INT)   BEGIN
+CREATE PROCEDURE `sp_process_budget` (IN `userCreatedId` INT, IN `clientId` INT, IN `token` VARCHAR(50), IN `totalWithDiscount` DECIMAL(10,2), IN `branchId` INT, IN `storeId` INT)   BEGIN
     DECLARE supplier INT;
     DECLARE registers INT;
     DECLARE total DECIMAL(10,2);
@@ -132,7 +132,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_process_budget` (IN `userCreated
     END IF;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_process_sale` (IN `userCreatedId` INT, IN `clientId` INT, IN `token` VARCHAR(50), IN `totalWithDiscount` DECIMAL(10,2), IN `branchId` INT, IN `storeId` INT)  DETERMINISTIC BEGIN
+CREATE PROCEDURE `sp_process_sale` (IN `userCreatedId` INT, IN `clientId` INT, IN `token` VARCHAR(50), IN `totalWithDiscount` DECIMAL(10,2), IN `branchId` INT, IN `storeId` INT)  DETERMINISTIC BEGIN
     DECLARE invoices INT;
     DECLARE registers INT;
     DECLARE total DECIMAL(10,2);
@@ -551,7 +551,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `budget_details`
 --
 ALTER TABLE `budget_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `clients`
@@ -563,19 +563,19 @@ ALTER TABLE `clients`
 -- AUTO_INCREMENT for table `estimates`
 --
 ALTER TABLE `estimates`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `invoices`
 --
 ALTER TABLE `invoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `invoice_details`
 --
 ALTER TABLE `invoice_details`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -587,13 +587,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `stores`
 --
 ALTER TABLE `stores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -605,7 +605,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `temporary_details`
 --
 ALTER TABLE `temporary_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`

@@ -7,9 +7,9 @@ if (!isset($_SESSION['loggedin']) && $_GET['page'] != 'login') {
     exit();
 }
 
-include_once("../views/header.php");
-include_once("../views/nav.php");
-require_once("../models/SaleModel.php");
+include_once(__DIR__ . "/../views/header.php");
+include_once(__DIR__ . "/../views/nav.php");
+require_once(__DIR__ . "/../models/SaleModel.php");
 
 $message = "";
 $range = "";
@@ -17,12 +17,12 @@ $rows = [];
 
 // Mostramos la vista para generar una nueva venta
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] !== "sales_report" && $_REQUEST["name"] !== "sales_list") {
-    require_once("../views/sales/saleRegister.php");
+    require_once(__DIR__ . "/../views/sales/saleRegister.php");
 }
 
 // MOSTRAMOS EL LISTADO DE VENTAS
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "sales_list") {
-    require_once("../views/sales/salesList.php");
+    require_once(__DIR__ . "/../views/sales/salesList.php");
 }
 
 // GENERAMOS EL REPORTE DE VENTAS
@@ -48,7 +48,7 @@ if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "sales_report") {
         $range = "<p style='text-align:right; color: #000'>Desde " . htmlspecialchars($from) . " Hasta " . htmlspecialchars($to) . "</p>";
     }
 
-    require_once("../views/sales/salesReport.php");
+    require_once(__DIR__ . "/../views/sales/salesReport.php");
 }
 
-include_once("../views/footer.php");
+include_once(__DIR__ . "/../views/footer.php");

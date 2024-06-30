@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 // BUSCAR CLIENTE CUANDO ESTAMOS EN LA VISTA DE VENTAS O PRESUPUESTOS
 if (isset($_POST['action']) && $_POST['action'] == 'clientSearch') {
@@ -8,7 +8,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'clientSearch') {
     if (!empty($_POST['client_dni'])) {
 
         $dni = $_POST['client_dni'];
-        $query = mysqli_query(MYSQLI, "SELECT * FROM CLIENTS WHERE DNI LIKE '$dni'");
+        $query = mysqli_query(MYSQLI, "SELECT * FROM clients WHERE DNI LIKE '$dni'");
         $result = mysqli_num_rows($query);
         $data = '';
 
@@ -45,7 +45,7 @@ function addClient()
         }
 
         if (is_numeric($dni) && $dni != 0) {
-            $stmt = MYSQLI->prepare("SELECT * FROM CLIENTS WHERE DNI = ?");
+            $stmt = MYSQLI->prepare("SELECT * FROM clients WHERE DNI = ?");
             $stmt->bind_param("i", $dni);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -53,7 +53,7 @@ function addClient()
             if ($result->num_rows > 0) {
                 $alert = '<div class="alert alert-danger" role="alert">El DNI ya existe.</div>';
             } else {
-                $stmt_insert = MYSQLI->prepare("INSERT INTO CLIENTS (DNI, NAME, phoneNumber, ADDRESS, EMAIL, branchId, storeId, UserCreatedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt_insert = MYSQLI->prepare("INSERT INTO clients (DNI, NAME, phoneNumber, ADDRESS, EMAIL, branchId, storeId, UserCreatedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt_insert->bind_param("issssiii", $dni, $name, $phoneNumber, $address, $email, $branchId, $storeId, $usuario_id);
 
                 if ($stmt_insert->execute()) {
@@ -71,7 +71,7 @@ function addClient()
 
 function getClients()
 {
-    $query = "SELECT * FROM CLIENTS";
+    $query = "SELECT * FROM clients";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -94,7 +94,7 @@ function getClientById($client_id)
         die("Error de conexión: " . MYSQLI->connect_error);
     }
 
-    $stmt = MYSQLI->prepare("SELECT * FROM CLIENTS WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM clients WHERE ID = ?");
     $stmt->bind_param("i", $client_id);
     $stmt->execute();
     $result_cliente = $stmt->get_result();
@@ -126,7 +126,7 @@ function editClient()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE CLIENTS SET name = ?, phoneNumber = ?, address = ?, EMAIL = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
+        $stmt = MYSQLI->prepare("UPDATE clients SET name = ?, phoneNumber = ?, address = ?, EMAIL = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
         $stmt->bind_param("ssssiii", $name, $phoneNumber, $address, $email, $userUpdatedId, $storeId, $client_id);
 
         if ($stmt->execute()) {
@@ -144,7 +144,7 @@ function editClient()
 function deleteClient($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM CLIENTS WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM clients WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -162,7 +162,7 @@ function deleteClient($id)
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -184,7 +184,7 @@ function getStores()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

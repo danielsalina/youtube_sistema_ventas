@@ -2,30 +2,30 @@
 
 session_start();
 
-require_once "../../config/db.php";
-require_once 'fpdf/fpdf.php';
+require_once __DIR__ . "/../../config/db.php";
+require_once __DIR__ . "/fpdf/fpdf.php";
 
 $client_id = $_REQUEST['clientId'];
 $numero_factura = $_REQUEST['estimateId'];
 $total_with_discount = $_REQUEST["totalWithDiscount"];
 
 // Consultas preparadas para seguridad
-$data_store = mysqli_prepare(MYSQLI, "SELECT * FROM STORES");
+$data_store = mysqli_prepare(MYSQLI, "SELECT * FROM stores");
 mysqli_stmt_execute($data_store);
 $resultado_configuracion = mysqli_stmt_get_result($data_store);
 $configuracion = mysqli_fetch_assoc($resultado_configuracion);
 
-$stmt_presupuestos = mysqli_prepare(MYSQLI, "SELECT * FROM ESTIMATES WHERE id = ?");
+$stmt_presupuestos = mysqli_prepare(MYSQLI, "SELECT * FROM estimates WHERE id = ?");
 mysqli_stmt_bind_param($stmt_presupuestos, "i", $numero_factura);
 mysqli_stmt_execute($stmt_presupuestos);
 $result_venta = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_presupuestos));
 
-$stmt_clientes = mysqli_prepare(MYSQLI, "SELECT * FROM CLIENTS WHERE ID = ?");
+$stmt_clientes = mysqli_prepare(MYSQLI, "SELECT * FROM clients WHERE ID = ?");
 mysqli_stmt_bind_param($stmt_clientes, "i", $client_id);
 mysqli_stmt_execute($stmt_clientes);
 $result_cliente = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_clientes));
 
-$stmt_productos = mysqli_prepare(MYSQLI, "SELECT d.invoiceNumber, d.productId, d.quantity, p.id, p.name, p.price FROM BUDGET_DETAILS d INNER JOIN PRODUCTS p ON d.invoiceNumber = ? WHERE d.productId = p.id");
+$stmt_productos = mysqli_prepare(MYSQLI, "SELECT d.invoiceNumber, d.productId, d.quantity, p.id, p.name, p.price FROM budget_details d INNER JOIN products p ON d.invoiceNumber = ? WHERE d.productId = p.id");
 mysqli_stmt_bind_param($stmt_productos, "i", $numero_factura);
 mysqli_stmt_execute($stmt_productos);
 $productos_result = mysqli_stmt_get_result($stmt_productos);

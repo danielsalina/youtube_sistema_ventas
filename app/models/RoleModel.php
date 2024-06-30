@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 // AGREGAMOS EL ROL
 /* if (isset($_POST["add_rol"]) == "add_rol") {
@@ -20,7 +20,7 @@ require_once("../../config/db.php");
 
         if (is_string($name) && !empty($name)) {
             $name = MYSQLI->real_escape_string($name);
-            $stmt = MYSQLI->prepare("SELECT * FROM ROLES WHERE NAME = ?");
+            $stmt = MYSQLI->prepare("SELECT * FROM roles WHERE NAME = ?");
             $stmt->bind_param('s', $name);
             $stmt->execute();
             $result = $stmt->get_result()->fetch_array();
@@ -28,7 +28,7 @@ require_once("../../config/db.php");
             if ($result) {
                 $alert = '<div class="alert alert-danger" role="alert">El nombre del role ya existe</div>';
             } else {
-                $stmt_insert = MYSQLI->prepare("INSERT INTO ROLES (NAME, DESCRIPTION, userUpdatedId, storeId) VALUES (?, ?, ?, ?)");
+                $stmt_insert = MYSQLI->prepare("INSERT INTO roles (NAME, DESCRIPTION, userUpdatedId, storeId) VALUES (?, ?, ?, ?)");
                 $stmt_insert->bind_param('ssii', $name, $description, $userUpdatedId, $storeId);
                 $query_insert = $stmt_insert->execute();
 
@@ -63,7 +63,7 @@ require_once("../../config/db.php");
         $storeId = $_POST['storeId'];
 
         $result = 0;
-        $sql_update = mysqli_query(MYSQLI, "UPDATE ROLES SET NAME = '$name' , DESCRIPTION = '$description', storeId = $storeId, userUpdatedId = $userUpdatedId WHERE ID = $id_role");
+        $sql_update = mysqli_query(MYSQLI, "UPDATE roles SET NAME = '$name' , DESCRIPTION = '$description', storeId = $storeId, userUpdatedId = $userUpdatedId WHERE ID = $id_role");
 
         if ($sql_update) {
             $alert = '<p class"exito">Rol actualizado correctamente</p>';
@@ -87,7 +87,7 @@ function addRole()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("SELECT * FROM ROLES WHERE NAME = ?");
+        $stmt = MYSQLI->prepare("SELECT * FROM roles WHERE NAME = ?");
         $stmt->bind_param("s", $name);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -95,7 +95,7 @@ function addRole()
         if ($result->num_rows > 0) {
             $alert = '<div class="alert alert-danger" role="alert">El nombre ya está registrado con otro rol.</div>';
         } else {
-            $stmt_insert = MYSQLI->prepare("INSERT INTO ROLES (NAME, DESCRIPTION, branchId, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?)");
+            $stmt_insert = MYSQLI->prepare("INSERT INTO roles (NAME, DESCRIPTION, branchId, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?)");
             $stmt_insert->bind_param("ssiii", $name, $description, $branchId, $userCreatedId, $storeId);
 
             if ($stmt_insert->execute()) {
@@ -112,7 +112,7 @@ function addRole()
 
 function getRoles()
 {
-    $query = "SELECT * FROM ROLES";
+    $query = "SELECT * FROM roles";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -136,7 +136,7 @@ function getRoleById($id_role)
         die("Error de conexión: " . MYSQLI->connect_error);
     }
 
-    $stmt = MYSQLI->prepare("SELECT * FROM ROLES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM roles WHERE ID = ?");
     $stmt->bind_param("i", $id_role);
     $stmt->execute();
     $result_role = $stmt->get_result();
@@ -166,7 +166,7 @@ function editRole()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE ROLES SET NAME = ?, DESCRIPTION = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE id = ?");
+        $stmt = MYSQLI->prepare("UPDATE roles SET NAME = ?, DESCRIPTION = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE id = ?");
         $stmt->bind_param("ssiii", $name, $description, $userUpdatedId, $storeId, $id);
 
         if ($stmt->execute()) {
@@ -184,7 +184,7 @@ function editRole()
 function deleteRole($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM ROLES WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM roles WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -202,7 +202,7 @@ function deleteRole($id)
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -224,7 +224,7 @@ function getStores()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

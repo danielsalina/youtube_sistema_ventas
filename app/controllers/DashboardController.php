@@ -7,9 +7,9 @@ if (!isset($_SESSION['loggedin']) && $_GET['page'] != 'login') {
     exit();
 }
 
-include_once("../views/header.php");
-include_once("../views/nav.php");
-require_once("../models/DashboardModel.php");
+include_once(__DIR__ . "/../views/header.php");
+include_once(__DIR__ . "/../views/nav.php");
+require_once(__DIR__ . "/../models/DashboardModel.php");
 
 $porcentaje = getDataCardOne()["porcentaje_diferencia_ventas"];
 $total_ventas = getDataCardOne()["total_ventas"];
@@ -19,5 +19,5 @@ $total_recaudado_mes_actual = getDataCardAndGraphic()["total_recaudado_mes_actua
 $porcentaje_diferencia_recaudado = getDataCardAndGraphic()["porcentaje_diferencia_recaudado"];
 $valores_grafico = getDataGraphic();
 
-require_once("../views/dashboard.php");
-include_once("../views/footer.php");
+require_once(__DIR__ . "/../views/dashboard.php");
+include_once(__DIR__ . "/../views/footer.php");

@@ -1,6 +1,6 @@
 <?php
 
-include_once("../../config/db.php");
+include_once(__DIR__ . "/../../config/db.php");
 
 // ACTUALIZAMOS LOS DATOS DE LA TIENDA
 /* if (isset($_POST["edit_store"]) == "edit_store") {
@@ -44,7 +44,7 @@ function addStore()
         $userCreatedId = $_SESSION['id_user'];
 
         // Consultar si el CUIT_CUIL ya está registrado
-        $stmt = MYSQLI->prepare("SELECT * FROM STORES WHERE CUIT_CUIL = ?");
+        $stmt = MYSQLI->prepare("SELECT * FROM stores WHERE CUIT_CUIL = ?");
         $stmt->bind_param("s", $cuit_cuil);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -53,7 +53,7 @@ function addStore()
             $alert = '<div class="alert alert-danger" role="alert">El CUIT_CUIL ya está registrado con otra tienda</div>';
         } else {
             // Insertar nueva tienda
-            $stmt_insert = MYSQLI->prepare("INSERT INTO STORES (CUIT_CUIL, NAME, tradeName, phoneNumber, email, ADDRESS, iva, userCreatedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert = MYSQLI->prepare("INSERT INTO stores (CUIT_CUIL, NAME, tradeName, phoneNumber, email, ADDRESS, iva, userCreatedId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt_insert->bind_param("ssssssii", $cuit_cuil, $name, $tradeName, $phoneNumber, $email, $address, $iva, $userCreatedId);
 
             if ($stmt_insert->execute()) {
@@ -73,7 +73,7 @@ function addStore()
 
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -95,7 +95,7 @@ function getStores()
 function getStoreById($id_store)
 {
 
-    $stmt = MYSQLI->prepare("SELECT * FROM STORES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM stores WHERE ID = ?");
     $stmt->bind_param("i", $id_store);
     $stmt->execute();
     $result_store = $stmt->get_result();
@@ -129,7 +129,7 @@ function editStore()
         /* $branchId = $_SESSION['branchId']; */
         $userUpdatedId = $_SESSION['id_user'];
 
-        $stmt = MYSQLI->prepare("UPDATE STORES SET CUIT_CUIL = ?, NAME = ?, tradeName = ?, phoneNumber = ?, EMAIL = ?, ADDRESS = ?, IVA = ?, userUpdatedId = ?, updatedAt = NOW() WHERE ID = ?");
+        $stmt = MYSQLI->prepare("UPDATE stores SET CUIT_CUIL = ?, NAME = ?, tradeName = ?, phoneNumber = ?, EMAIL = ?, ADDRESS = ?, IVA = ?, userUpdatedId = ?, updatedAt = NOW() WHERE ID = ?");
         $stmt->bind_param("sssissiii", $cuit_cuil, $name, $tradeName, $phoneNumber, $email, $address, $iva, $userUpdatedId, $id);
 
 
@@ -148,7 +148,7 @@ function editStore()
 function deleteStore($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM STORES WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM stores WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -165,7 +165,7 @@ function deleteStore($id)
 
 function getBranchById($id)
 {
-    $stmt = MYSQLI->prepare("SELECT * FROM BRANCHES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM branches WHERE ID = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -176,7 +176,7 @@ function getBranchById($id)
 
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

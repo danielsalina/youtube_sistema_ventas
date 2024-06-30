@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 // AJAX, Buscar datos del producto con codigo
 if (isset($_POST['action']) and $_POST['action'] == 'productInfowihtCode') {
@@ -9,7 +9,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'productInfowihtCode') {
 
     $data = "";
     $producto_id = $_POST['product'];
-    $query = mysqli_query(MYSQLI, "SELECT * FROM PRODUCTS WHERE ID = $producto_id");
+    $query = mysqli_query(MYSQLI, "SELECT * FROM products WHERE ID = $producto_id");
 
     mysqli_close(MYSQLI);
 
@@ -38,7 +38,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'productInfowihtName') {
     $producto_name = mysqli_real_escape_string(MYSQLI, $producto_name);
 
     // Consulta corregida
-    $query = mysqli_query(MYSQLI, "SELECT * FROM PRODUCTS WHERE name LIKE '%$producto_name%'");
+    $query = mysqli_query(MYSQLI, "SELECT * FROM products WHERE name LIKE '%$producto_name%'");
 
     // Verificar si la consulta fue exitosa
     if ($query) {
@@ -69,7 +69,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'addProductToDetail') {
         $product = $_POST['product'];
         $quantity = $_POST['quantity'];
         $tokenUser = md5($_SESSION['id_user']);
-        $query_iva = mysqli_query(MYSQLI, "SELECT * FROM STORES");
+        $query_iva = mysqli_query(MYSQLI, "SELECT * FROM stores");
         $result_iva = mysqli_num_rows($query_iva);
 
         if (preg_match('/^\d+$/', $product)) { // When the value is numeric
@@ -159,7 +159,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'eliminarProducto') {
     } else {
         $id_detalle = $_POST['id_detalle'];
         $token = md5($_SESSION['id_user']);
-        $query_iva = mysqli_query(MYSQLI, "SELECT * FROM STORES");
+        $query_iva = mysqli_query(MYSQLI, "SELECT * FROM stores");
         $result_iva = mysqli_num_rows($query_iva);
         $query_detalle_tmp = mysqli_query(MYSQLI, "CALL sp_delete_temporal_detail($id_detalle,'$token')");
         $result = mysqli_num_rows($query_detalle_tmp);
@@ -230,7 +230,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'eliminarProducto') {
 
 function getProviders()
 {
-    $query = "SELECT * FROM SUPPLIERS ORDER BY NAME ASC";
+    $query = "SELECT * FROM suppliers ORDER BY NAME ASC";
 
     $result = mysqli_query(MYSQLI, $query);
 
@@ -267,7 +267,7 @@ function addProduct()
         $storeId = $_POST['storeId'];
 
 
-        $query_insert = mysqli_query(MYSQLI, "INSERT INTO PRODUCTS (SUPPLIER, NAME, PRICE, STOCK, branchId, userCreatedId, storeId) VALUES ('$supplier', '$name', '$price', '$quantity', $branchId, '$userCreatedId', $storeId)");
+        $query_insert = mysqli_query(MYSQLI, "INSERT INTO products (SUPPLIER, NAME, PRICE, STOCK, branchId, userCreatedId, storeId) VALUES ('$supplier', '$name', '$price', '$quantity', $branchId, '$userCreatedId', $storeId)");
 
         if ($query_insert) {
             $alert = '<div class="alert alert-primary" role="alert"> Producto Registrado </div>';
@@ -287,7 +287,7 @@ function newPriceMassive()
     $storeId = $_POST['storeId'];
 
     if ($porcentaje !== false && $porcentaje > 0) {
-        $query = "UPDATE PRODUCTS SET PRICE = PRICE * (1 + (? / 100)), userUpdatedId = ?, storeId = ?, updatedAt = NOW()";
+        $query = "UPDATE products SET PRICE = PRICE * (1 + (? / 100)), userUpdatedId = ?, storeId = ?, updatedAt = NOW()";
         $stmt = mysqli_prepare(MYSQLI, $query);
 
         if ($stmt) {
@@ -312,11 +312,11 @@ function newPriceMassive()
 
 function getProducts()
 {
-    /* $query = "SELECT * FROM PRODUCTS"; */
+    /* $query = "SELECT * FROM products"; */
 
     $query = "SELECT p.id, p.name, p.price, p.stock, pr.name AS supplier 
-          FROM PRODUCTS p 
-          INNER JOIN SUPPLIERS pr ON p.supplier = pr.id";
+          FROM products p 
+          INNER JOIN suppliers pr ON p.supplier = pr.id";
 
     $result = mysqli_query(MYSQLI, $query);
 
@@ -343,7 +343,7 @@ function getProductById($product_id = null)
 
     $data_producto = [];
     if ($product_id > 0) {
-        $stmt = MYSQLI->prepare("SELECT p.id AS productId, p.name AS nombre_producto, p.price AS precio_producto, p.stock AS product_quantity, pr.id AS id_proveedor, pr.name AS nombre_proveedor, pr.phoneNumber AS telefono_proveedor, pr.address AS direccion_proveedor FROM PRODUCTS p INNER JOIN SUPPLIERS pr ON p.supplier = pr.id WHERE p.id = ?");
+        $stmt = MYSQLI->prepare("SELECT p.id AS productId, p.name AS nombre_producto, p.price AS precio_producto, p.stock AS product_quantity, pr.id AS id_proveedor, pr.name AS nombre_proveedor, pr.phoneNumber AS telefono_proveedor, pr.address AS direccion_proveedor FROM products p INNER JOIN suppliers pr ON p.supplier = pr.id WHERE p.id = ?");
         if ($stmt) {
             $stmt->bind_param("i", $product_id);
             $stmt->execute();
@@ -375,7 +375,7 @@ function editProduct()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE PRODUCTS SET NAME = ?, SUPPLIER = ?, PRICE = ?, STOCK = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE id = ?");
+        $stmt = MYSQLI->prepare("UPDATE products SET NAME = ?, SUPPLIER = ?, PRICE = ?, STOCK = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE id = ?");
         if ($stmt) {
             $stmt->bind_param("siidiii", $name, $provider_id, $price, $quantity, $user_id, $storeId, $product_id);
             if ($stmt->execute()) {
@@ -400,26 +400,25 @@ function updatedProduct()
     $supplier = isset($_POST["aumentar_por_proveedor"]) ? (int)$_POST["aumentar_por_proveedor"] : "";
 
     if ($porcentaje !== false && $porcentaje > 0 && $supplier !== false && $supplier > 0) {
-        $stmt = MYSQLI->prepare("SELECT * FROM PRODUCTS WHERE SUPPLIER = ?");
+        $stmt = MYSQLI->prepare("SELECT * FROM products WHERE SUPPLIER = ?");
         $stmt->bind_param("i", $supplier);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            $update_stmt = MYSQLI->prepare("UPDATE PRODUCTS SET PRICE = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
             $userUpdatedId = $_SESSION['id_user'];
-            /* $storeId = $_SESSION['storeId']; */
-            $storeId = $_POST['storeId'];
+            $storeId = $_SESSION['storeId'];
+            $update_stmt = MYSQLI->prepare("UPDATE products SET PRICE = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
 
             while ($data = $result->fetch_assoc()) {
                 $precio_actual = $data['price'];
                 $aumento = ($precio_actual * $porcentaje) / 100;
                 $nuevo_precio = $precio_actual + $aumento;
-                $update_stmt->bind_param("dii", $nuevo_precio, $userUpdatedId, $storeId, $data['id']);
+                $update_stmt->bind_param("diii", $nuevo_precio, $userUpdatedId, $storeId, $data['id']);
                 $update_stmt->execute();
             }
 
-            $stmt_nombre = MYSQLI->prepare("SELECT * FROM SUPPLIERS WHERE ID = ?");
+            $stmt_nombre = MYSQLI->prepare("SELECT * FROM suppliers WHERE ID = ?");
             $stmt_nombre->bind_param("i", $supplier);
             $stmt_nombre->execute();
             $result_nombre = $stmt_nombre->get_result();
@@ -448,7 +447,7 @@ function deleteProductById()
 {
     $product_id = (int)$_REQUEST['id'];
 
-    $stmt = MYSQLI->prepare("DELETE FROM PRODUCTS WHERE ID = ?");
+    $stmt = MYSQLI->prepare("DELETE FROM products WHERE ID = ?");
     $alert = "";
 
     if ($stmt) {
@@ -472,7 +471,7 @@ function deleteProductById()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -494,7 +493,7 @@ function getStores()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

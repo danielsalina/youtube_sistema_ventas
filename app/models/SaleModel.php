@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 // Registrar cliente desde la creacion de la venta
 if (isset($_POST["action"]) and $_POST["action"] == "client_register") {
@@ -16,13 +16,13 @@ if (isset($_POST["action"]) and $_POST["action"] == "client_register") {
     $storeId = $_SESSION['storeId'];
     /* $storeId = $_POST['storeId']; */
 
-    $query = mysqli_query(MYSQLI, "SELECT * FROM CLIENTS WHERE EMAIL = '$email'");
+    $query = mysqli_query(MYSQLI, "SELECT * FROM clients WHERE EMAIL = '$email'");
     $result = mysqli_fetch_array($query);
 
     if ($result > 0) {
         $alert = '<div class="alert alert-danger" role="alert">El email ya existe.</div>';
     } else {
-        $query_insert = mysqli_query(MYSQLI, "INSERT INTO CLIENTS (DNI, NAME, phoneNumber, ADDRESS, EMAIL, branchId, UserCreatedId, storeId) VALUES ($dni, '$name', '$phoneNumber', '$address', '$email', $branchId, $userCreatedId, $storeId)");
+        $query_insert = mysqli_query(MYSQLI, "INSERT INTO clients (DNI, NAME, phoneNumber, ADDRESS, EMAIL, branchId, UserCreatedId, storeId) VALUES ($dni, '$name', '$phoneNumber', '$address', '$email', $branchId, $userCreatedId, $storeId)");
 
         if ($query_insert) {
             $alert = '<div class="alert alert-primary" role="alert">Cliente registrado satisfactoriamente.</div>';
@@ -39,7 +39,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'cancelSale') {
 
     $data = "";
     $token = md5($_SESSION['id_user']);
-    $query_del = mysqli_query(MYSQLI, "DELETE FROM TEMPORARY_DETAILS WHERE tokenUser = '$token'");
+    $query_del = mysqli_query(MYSQLI, "DELETE FROM temporary_details WHERE tokenUser = '$token'");
 
     mysqli_close(MYSQLI);
 
@@ -64,7 +64,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'processSale') {
     $storeId = $_SESSION['storeId'];
     /* $storeId = $_POST['storeId']; */
 
-    $query = mysqli_query(MYSQLI, "SELECT * FROM TEMPORARY_DETAILS WHERE tokenUser = '$token' ");
+    $query = mysqli_query(MYSQLI, "SELECT * FROM temporary_details WHERE tokenUser = '$token' ");
     $result = mysqli_num_rows($query);
 
     if ($result > 0) {
@@ -89,7 +89,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'processSale') {
 
 function getSales(): array
 {
-    $query = "SELECT * FROM INVOICES ORDER BY DATE DESC";
+    $query = "SELECT * FROM invoices ORDER BY DATE DESC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -109,7 +109,7 @@ function getSales(): array
 
 function getSalesForDate(string $from, string $to): array
 {
-    $query = "SELECT * FROM INVOICES WHERE DATE(DATE) BETWEEN '$from' AND '$to'";
+    $query = "SELECT * FROM invoices WHERE DATE(DATE) BETWEEN '$from' AND '$to'";
 
     $result = mysqli_query(MYSQLI, $query);
 

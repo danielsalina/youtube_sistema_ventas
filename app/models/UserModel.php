@@ -1,7 +1,7 @@
 <?php
 
-require_once("../../config/db.php");
-require_once("../../functions/functions.php");
+require_once(__DIR__ . "/../../config/db.php");
+require_once(__DIR__ . "/../../functions/functions.php");
 
 // EDITAMOS AL USUARIO
 /* if (isset($_POST["edit_user"]) == "edit_user") {
@@ -19,14 +19,14 @@ require_once("../../functions/functions.php");
         // $storeId = $_SESSION['storeId'];
         $storeId = $_POST['storeId'];
 
-        $sql_update = mysqli_query(MYSQLI, "UPDATE USERS SET NAME = '$name', EMAIL = '$email', ROLE = '$role', userUpdatedId = $userUpdatedId, storeId = $storeId WHERE ID = $id");
+        $sql_update = mysqli_query(MYSQLI, "UPDATE users SET NAME = '$name', EMAIL = '$email', ROLE = '$role', userUpdatedId = $userUpdatedId, storeId = $storeId WHERE ID = $id");
         $alert = '<p>Usuario Actualizado</p>';
     }
 } */
 
 function login(string $email, string $password): array | bool
 {
-    $query = "SELECT * FROM USERS WHERE EMAIL = ?";
+    $query = "SELECT * FROM users WHERE EMAIL = ?";
     $stmt = mysqli_prepare(MYSQLI, $query);
 
     if (!$stmt) {
@@ -83,7 +83,7 @@ function addUser()
         $storeId = $_POST['storeId'];
 
 
-        $stmt = MYSQLI->prepare("SELECT * FROM USERS WHERE EMAIL = ?");
+        $stmt = MYSQLI->prepare("SELECT * FROM users WHERE EMAIL = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -92,7 +92,7 @@ function addUser()
             $alert = '<div class="alert alert-danger" role="alert">El email ya está registrado con otro usuario.</div>';
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt_insert = MYSQLI->prepare("INSERT INTO USERS (ROLE, EMAIL, branchId, NAME, PASSWORD, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert = MYSQLI->prepare("INSERT INTO users (ROLE, EMAIL, branchId, NAME, PASSWORD, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt_insert->bind_param("sssssii", $role, $email, $branchId, $name, $hashed_password, $userCreatedId, $storeId);
 
             if ($stmt_insert->execute()) {
@@ -113,7 +113,7 @@ function getUserById($user_id)
         die("Error de conexión: " . MYSQLI->connect_error);
     }
 
-    $stmt = MYSQLI->prepare("SELECT * FROM USERS WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM users WHERE ID = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result_user = $stmt->get_result();
@@ -132,8 +132,8 @@ function getUserById($user_id)
 function getUsers()
 {
     $query = "SELECT u.id as id_usuario, u.name as nombre_usuario, u.email, r.name as nombre_rol, u.branchId 
-              FROM USERS u 
-              INNER JOIN ROLES r ON u.role = r.id";
+              FROM users u 
+              INNER JOIN roles r ON u.role = r.id";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -164,7 +164,7 @@ function editUser()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE USERS SET NAME = ?, EMAIL = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
+        $stmt = MYSQLI->prepare("UPDATE users SET NAME = ?, EMAIL = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
         $stmt->bind_param("ssiii", $name, $email, $userUpdatedId, $storeId, $id);
 
         if ($stmt->execute()) {
@@ -195,7 +195,7 @@ function userUpdatePassword()
         /* $storeId = $_SESSION['storeId']; */
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("SELECT password FROM USERS WHERE ID = ?");
+        $stmt = MYSQLI->prepare("SELECT password FROM users WHERE ID = ?");
         $stmt->bind_param("i", $userUpdatedId);
         $stmt->execute();
         $result_user = $stmt->get_result();
@@ -208,7 +208,7 @@ function userUpdatePassword()
 
             if (password_verify($password_actual, $hashed_password)) {
                 $hashed_password_new = password_hash($password_new, PASSWORD_DEFAULT);
-                $update_stmt = MYSQLI->prepare("UPDATE USERS SET PASSWORD = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
+                $update_stmt = MYSQLI->prepare("UPDATE users SET PASSWORD = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
                 $update_stmt->bind_param("siii", $hashed_password_new, $userUpdatedId, $storeId, $id);
 
                 if ($update_stmt->execute()) {
@@ -231,7 +231,7 @@ function userUpdatePassword()
 function deleteUser($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM USERS WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM users WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -249,7 +249,7 @@ function deleteUser($id)
 /* function getNameRoleById()
 {
 
-    $stmt = MYSQLI->prepare("SELECT * FROM ROLES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM roles WHERE ID = ?");
     $stmt->bind_param("i", $_SESSION['role']);
     $stmt->execute();
     $result_role = $stmt->get_result();
@@ -267,7 +267,7 @@ function deleteUser($id)
 
 function getRoles()
 {
-    $query = "SELECT * FROM ROLES";
+    $query = "SELECT * FROM roles";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -287,7 +287,7 @@ function getRoles()
 
 function getNameBranchById($branchId)
 {
-    $stmt = MYSQLI->prepare("SELECT * FROM BRANCHES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM branches WHERE ID = ?");
     $stmt->bind_param("i", $branchId);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -306,7 +306,7 @@ function getNameBranchById($branchId)
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -324,7 +324,7 @@ function getBranches()
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

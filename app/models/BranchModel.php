@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 function addBranch()
 {
@@ -18,7 +18,7 @@ function addBranch()
         $storeId = $_POST['storeId'];
 
         // Revisar si el cuit ya existe
-        $stmt = MYSQLI->prepare("SELECT * FROM BRANCHES WHERE CUIT = ?");
+        $stmt = MYSQLI->prepare("SELECT * FROM branches WHERE CUIT = ?");
         $stmt->bind_param("s", $cuit);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -27,7 +27,7 @@ function addBranch()
             $alert = '<div class="alert alert-danger" role="alert">El cuit ya está registrado con otra sucursal.</div>';
         } else {
             // Insertar el nuevo rol
-            $stmt_insert = MYSQLI->prepare("INSERT INTO BRANCHES (NAME, CUIT, EMAIL, phoneNumber, ADDRESS, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt_insert = MYSQLI->prepare("INSERT INTO branches (NAME, CUIT, EMAIL, phoneNumber, ADDRESS, userCreatedId, storeId) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt_insert->bind_param("sssssii", $name, $cuit, $email, $phoneNumber, $address, $userCreatedId, $storeId);
 
             if ($stmt_insert->execute()) {
@@ -44,7 +44,7 @@ function addBranch()
 
 function getBranches()
 {
-    $query = "SELECT * FROM BRANCHES";
+    $query = "SELECT * FROM branches";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {
@@ -60,7 +60,7 @@ function getBranches()
 
 function getBranchById($id)
 {
-    $stmt = MYSQLI->prepare("SELECT * FROM BRANCHES WHERE ID = ?");
+    $stmt = MYSQLI->prepare("SELECT * FROM branches WHERE ID = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -85,7 +85,7 @@ function editBranch()
         $userUpdatedId = $_SESSION['id_user'];
         $storeId = $_POST['storeId'];
 
-        $stmt = MYSQLI->prepare("UPDATE BRANCHES SET CUIT = ?, NAME = ?, EMAIL = ?, phoneNumber = ?, ADDRESS = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
+        $stmt = MYSQLI->prepare("UPDATE branches SET CUIT = ?, NAME = ?, EMAIL = ?, phoneNumber = ?, ADDRESS = ?, userUpdatedId = ?, storeId = ?, updatedAt = NOW() WHERE ID = ?");
         $stmt->bind_param("sssisiii", $cuit, $name, $email, $phoneNumber, $address, $userUpdatedId, $storeId, $id);
 
         if ($stmt->execute()) {
@@ -103,7 +103,7 @@ function editBranch()
 function deleteBranch($id)
 {
     if (is_numeric($id)) {
-        $stmt = MYSQLI->prepare("DELETE FROM BRANCHES WHERE ID = ?");
+        $stmt = MYSQLI->prepare("DELETE FROM branches WHERE ID = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
@@ -121,7 +121,7 @@ function deleteBranch($id)
 // ESTO LO USAMOS EN LA CREACION Y EDICION DEL PROVEEDOR
 function getStores()
 {
-    $query = "SELECT * FROM STORES ORDER BY NAME ASC";
+    $query = "SELECT * FROM stores ORDER BY NAME ASC";
     $result = mysqli_query(MYSQLI, $query);
 
     if (!$result) {

@@ -7,9 +7,9 @@ if (!isset($_SESSION['loggedin']) && $_GET['page'] != 'login') {
     exit();
 }
 
-include_once("../views/header.php");
-include_once("../views/nav.php");
-require_once("../models/UserModel.php");
+include_once(__DIR__ . "/../views/header.php");
+include_once(__DIR__ . "/../views/nav.php");
+require_once(__DIR__ . "/../models/UserModel.php");
 
 $alert = '';
 $data_user = [];
@@ -19,7 +19,7 @@ if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "user_new" && !isset($_POS
     $branches = getBranches();
     $stores = getStores();
     $roles = getRoles();
-    require_once("../views/users/userRegister.php");
+    require_once(__DIR__ . "/../views/users/userRegister.php");
 }
 
 // RECIBIMOS EL POST Y CREAMOS UN NUEVO USUARIO
@@ -28,12 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_user"])) {
     $stores = getStores();
     $roles = getRoles();
     $alert = addUser();
-    require_once("../views/users/userRegister.php");
+    require_once(__DIR__ . "/../views/users/userRegister.php");
 }
 
-// MOSTRAMOS LA LISTA DE USERS
+// MOSTRAMOS LA LISTA DE users
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "users_list") {
-    require_once("../views/users/usersList.php");
+    require_once(__DIR__ . "/../views/users/usersList.php");
 }
 
 // EDITAMOS UN USUARIO
@@ -41,7 +41,7 @@ if (isset($_REQUEST["id"]) && is_numeric($_REQUEST["id"]) && !isset($_POST["edit
     $branches = getBranches();
     $stores = getStores();
     $data_user = getUserById($_REQUEST["id"]);
-    require_once("../views/users/userEdit.php");
+    require_once(__DIR__ . "/../views/users/userEdit.php");
 }
 
 // ACTUALIZAMOS EL USUARIO EDITADO
@@ -51,24 +51,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit_user"])) {
     $alert = editUser();
     $data_user = getUserById($_POST["id"]);
     $data_company_user = getNameBranchById($_POST["id"]);
-    require_once("../views/users/userEdit.php");
+    require_once(__DIR__ . "/../views/users/userEdit.php");
 }
 
 // MOSTRAMOS FORMULARIO PARA ACTUALIZAR LA CONTRASEÑA DE UN USUARIO
 if (isset($_GET["password_update"])) {
-    require_once("../views/users/userUpdatePassword.php");
+    require_once(__DIR__ . "/../views/users/userUpdatePassword.php");
 }
 
 // ACTUALIZAMOS LA CONTRASEÑA DE UN USUARIO
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["password_update"])) {
     $alert = userUpdatePassword();
-    require_once("../views/users/userUpdatePassword.php");
+    require_once(__DIR__ . "/../views/users/userUpdatePassword.php");
 }
 
 // ELIMINAMOS UN USUARIO
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     deleteUser($_GET['delete']);
-    require_once("../views/users/usersList.php");
+    require_once(__DIR__ . "/../views/users/usersList.php");
 }
 
-include_once("../views/footer.php");
+include_once(__DIR__ . "/../views/footer.php");

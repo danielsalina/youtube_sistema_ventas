@@ -7,9 +7,9 @@ if (!isset($_SESSION['loggedin']) && $_GET['page'] != 'login') {
     exit();
 }
 
-include_once("../views/header.php");
-include_once("../views/nav.php");
-require_once("../models/RoleModel.php");
+include_once(__DIR__ . "/../views/header.php");
+include_once(__DIR__ . "/../views/nav.php");
+require_once(__DIR__ . "/../models/RoleModel.php");
 
 $alert = '';
 $data_role = [];
@@ -18,7 +18,7 @@ $data_role = [];
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "role_new" && !isset($_POST["add_role"])) {
     $branches = getBranches();
     $stores = getStores();
-    require_once("../views/roles/roleRegister.php");
+    require_once(__DIR__ . "/../views/roles/roleRegister.php");
 }
 
 // RECIBIMOS EL POST Y CREAMOS UN NUEVO ROL
@@ -26,12 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["add_role"])) {
     $branches = getBranches();
     $stores = getStores();
     $alert = addRole();
-    require_once("../views/roles/roleRegister.php");
+    require_once(__DIR__ . "/../views/roles/roleRegister.php");
 }
 
-// MOSTRAMOS LA LISTA DE ROLES
+// MOSTRAMOS LA LISTA DE roles
 if (isset($_REQUEST["name"]) && $_REQUEST["name"] === "roles_list") {
-    require_once("../views/roles/rolesList.php");
+    require_once(__DIR__ . "/../views/roles/rolesList.php");
 }
 
 // Editamos el cliente
@@ -39,7 +39,7 @@ if (isset($_REQUEST["id"]) && is_numeric($_REQUEST["id"]) && !isset($_POST["edit
     $branches = getBranches();
     $stores = getStores();
     $data_role = getRoleById($_REQUEST["id"]);
-    require_once("../views/roles/roleEdit.php");
+    require_once(__DIR__ . "/../views/roles/roleEdit.php");
 }
 
 // ACTUALIZAMOS EL ROL EDITADO
@@ -48,13 +48,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit_role"])) {
     $stores = getStores();
     $alert = editRole();
     $data_role = getRoleById($_POST["id"]);
-    require_once("../views/roles/roleEdit.php");
+    require_once(__DIR__ . "/../views/roles/roleEdit.php");
 }
 
 // ELIMINAMOS UN ROL
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     deleteRole($_GET['delete']);
-    require_once("../views/roles/rolesList.php");
+    require_once(__DIR__ . "/../views/roles/rolesList.php");
 }
 
-include_once("../views/footer.php");
+include_once(__DIR__ . "/../views/footer.php");

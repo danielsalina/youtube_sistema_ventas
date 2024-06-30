@@ -1,6 +1,6 @@
 <?php
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 function getDataCardOne()
 {
@@ -9,7 +9,7 @@ function getDataCardOne()
     // Consulta para obtener el total de facturas del mes actual
     $query_total_facturas = MYSQLI->prepare("
         SELECT COUNT(*) AS total_facturas 
-        FROM INVOICES 
+        FROM invoices 
         WHERE MONTH(date) = MONTH(CURRENT_DATE()) 
         AND YEAR(date) = YEAR(CURRENT_DATE())");
 
@@ -24,7 +24,7 @@ function getDataCardOne()
         SELECT
             SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN total ELSE 0 END) AS total_mes_pasado,
             SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE()) THEN total ELSE 0 END) AS total_mes_actual
-        FROM INVOICES");
+        FROM invoices");
 
     $query_ventas->execute();
     $result_ventas = $query_ventas->get_result();
@@ -53,7 +53,7 @@ function getDataCardTwo()
 
     // Consulta para obtener el total de presupuestos del mes actual
     $query_insert_presupuestos = MYSQLI->prepare("SELECT COUNT(*) AS total_presupuestos 
-                                    FROM ESTIMATES 
+                                    FROM estimates 
                                     WHERE MONTH(date) = MONTH(CURRENT_DATE()) 
                                       AND YEAR(date) = YEAR(CURRENT_DATE());");
 
@@ -69,7 +69,7 @@ function getDataCardTwo()
            SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE()) 
            AND YEAR(date) = YEAR(CURRENT_DATE()) 
            THEN total ELSE 0 END) AS total_mes_actual
-           FROM ESTIMATES;");
+           FROM estimates;");
 
     $query_insert_totales->execute();
     $data_totales = $query_insert_totales->get_result()->fetch_assoc();
@@ -100,7 +100,7 @@ function getTotalForMonth($year, $month)
             WHEN totalWithDiscount IS NOT NULL AND totalWithDiscount > 0 THEN totalWithDiscount
             ELSE total
         END) AS total
-    FROM INVOICES
+    FROM invoices
     WHERE MONTH(date) = ? AND YEAR(date) = ?";
 
     $stmt = MYSQLI->prepare($query);
@@ -124,7 +124,7 @@ function getDataCardAndGraphic()
         SELECT
     SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN total ELSE 0 END) AS total_mes_pasado,
     SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE()) THEN total ELSE 0 END) AS total_mes_actual
-FROM INVOICES;";
+FROM invoices;";
 
     $stmt_actual = MYSQLI->prepare($query_actual);
     $stmt_actual->execute();
@@ -185,7 +185,7 @@ function getTotalForToday()
             WHEN totalWithDiscount IS NOT NULL AND totalWithDiscount > 0 THEN totalWithDiscount
             ELSE total
         END) AS total
-    FROM INVOICES
+    FROM invoices
     WHERE DATE(date) = CURRENT_DATE()";
 
     $stmt = MYSQLI->prepare($query);
@@ -225,7 +225,7 @@ function getDataGraphic()
 
     // Consulta SQL con parámetros para storeId y branchId
     $sql = "SELECT id, date, userCreatedId, clientId, total, totalWithDiscount 
-    FROM INVOICES";
+    FROM invoices";
 
     // Preparar la consulta
     $stmt = MYSQLI->prepare($sql);
@@ -290,7 +290,7 @@ function getDataGraphic()
 
 /* 
 
-require_once("../../config/db.php");
+require_once(__DIR__ . "/../../config/db.php");
 
 function getDataCardOne()
 {
@@ -304,7 +304,7 @@ function getDataCardOne()
     // Consulta para obtener el total de facturas del mes actual
     $query_total_facturas = MYSQLI->prepare("
         SELECT COUNT(*) AS total_facturas 
-        FROM INVOICES 
+        FROM invoices 
         WHERE MONTH(date) = MONTH(CURRENT_DATE()) 
         AND YEAR(date) = YEAR(CURRENT_DATE()) 
         AND storeId = ? 
@@ -322,7 +322,7 @@ function getDataCardOne()
         SELECT
         SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND YEAR(date) = YEAR(CURRENT_DATE() - INTERVAL 1 MONTH) THEN total ELSE 0 END) AS total_mes_pasado,
         SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE()) THEN total ELSE 0 END) AS total_mes_actual
-        FROM INVOICES
+        FROM invoices
         WHERE storeId = ? 
         AND branchId = ?
     ");
@@ -357,7 +357,7 @@ function getDataCardTwo()
 
     // Consulta para obtener el total de presupuestos del mes actual
     $query_insert_presupuestos = MYSQLI->prepare("SELECT COUNT(*) AS total_presupuestos 
-                                    FROM ESTIMATES 
+                                    FROM estimates 
                                     WHERE MONTH(date) = MONTH(CURRENT_DATE()) 
                                       AND YEAR(date) = YEAR(CURRENT_DATE()) 
                                       AND storeId = ? 
@@ -376,7 +376,7 @@ function getDataCardTwo()
         SUM(CASE WHEN MONTH(date) = MONTH(CURRENT_DATE()) 
                    AND YEAR(date) = YEAR(CURRENT_DATE()) 
                    THEN total ELSE 0 END) AS total_mes_actual
-    FROM ESTIMATES
+    FROM estimates
     WHERE storeId = ? 
       AND branchId = ?;");
     $query_insert_totales->bind_param("ii", $storeId, $branchId);
@@ -409,7 +409,7 @@ function getTotalForMonth($storeId, $branchId, $year, $month)
                 WHEN totalWithDiscount IS NOT NULL AND totalWithDiscount > 0 THEN totalWithDiscount
                 ELSE total
             END) AS total
-        FROM INVOICES
+        FROM invoices
         WHERE MONTH(date) = ? AND YEAR(date) = ? AND storeId = ? AND branchId = ?
     ";
     $stmt = MYSQLI->prepare($query);
@@ -435,7 +435,7 @@ function getDataCardAndGraphic()
     $query_actual = "
         SELECT
             SUM(COALESCE(totalWithDiscount, total)) AS total_mes_actual
-        FROM INVOICES
+        FROM invoices
         WHERE MONTH(date) = MONTH(CURRENT_DATE()) AND YEAR(date) = YEAR(CURRENT_DATE())
         AND storeId = ? AND branchId = ?
     ";
@@ -502,7 +502,7 @@ function getTotalForToday()
                 WHEN totalWithDiscount IS NOT NULL AND totalWithDiscount > 0 THEN totalWithDiscount
                 ELSE total
             END) AS total
-        FROM INVOICES
+        FROM invoices
         WHERE DATE(date) = CURRENT_DATE()
     AND storeId = ? AND branchId = ?
     ";
@@ -548,7 +548,7 @@ function getDataGraphic()
 
     // Consulta SQL con parámetros para storeId y branchId
     $sql = "SELECT id, date, userCreatedId, clientId, total, totalWithDiscount 
-        FROM INVOICES 
+        FROM invoices 
         WHERE storeId = ? AND branchId = ?";
 
     // Preparar la consulta
